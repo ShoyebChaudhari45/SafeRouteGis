@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarAlerts"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@drawable/bg_gradient_primary"
+            app:titleTextColor="@color/colorTextOnPrimary"
+            app:navigationIconTint="#FFFFFF" />
+
+        <!-- Filter chips -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:scrollbars="none"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                app:chipSpacingHorizontal="8dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All"
+                    android:tag="ALL"
+                    android:checked="true"
+                    android:textSize="13sp"
+                    android:textColor="#FFFFFF"
+                    app:chipCornerRadius="20dp"
+                    app:chipStrokeWidth="1dp"
+                    app:chipStrokeColor="#55FFFFFF"
+                    app:chipMinHeight="36dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAccidents"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Accidents"
+                    android:tag="ACCIDENT"
+                    android:textSize="13sp"
+                    android:textColor="#FFFFFF"
+                    app:chipCornerRadius="20dp"
+                    app:chipStrokeWidth="1dp"
+                    app:chipStrokeColor="#55FFFFFF"
+                    app:chipMinHeight="36dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPotholes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Potholes"
+                    android:tag="POTHOLE"
+                    android:textSize="13sp"
+                    android:textColor="#FFFFFF"
+                    app:chipCornerRadius="20dp"
+                    app:chipStrokeWidth="1dp"
+                    app:chipStrokeColor="#55FFFFFF"
+                    app:chipMinHeight="36dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipConstruction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Construction"
+                    android:tag="CONSTRUCTION"
+                    android:textSize="13sp"
+                    android:textColor="#FFFFFF"
+                    app:chipCornerRadius="20dp"
+                    app:chipStrokeWidth="1dp"
+                    app:chipStrokeColor="#55FFFFFF"
+                    app:chipMinHeight="36dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTraffic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Traffic"
+                    android:tag="TRAFFIC"
+                    android:textSize="13sp"
+                    android:textColor="#FFFFFF"
+                    app:chipCornerRadius="20dp"
+                    app:chipStrokeWidth="1dp"
+                    app:chipStrokeColor="#55FFFFFF"
+                    app:chipMinHeight="36dp" />
+
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerAlerts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="6dp"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <!-- Empty state -->
+    <LinearLayout
+        android:id="@+id/layoutAlertsEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🛡️"
+            android:textSize="48sp"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/tvAlertsEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_alerts"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All roads look safe right now!"
+            android:textColor="@color/colorTextHint"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         PERMISSIONS
+    ════════════════════════════════════════════════════════════════════════ -->
+
+    <!-- Network access for Google Maps + Directions API -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- GPS location (precise + approximate) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Image storage – READ_EXTERNAL_STORAGE for API 28 and below -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <!-- READ_MEDIA_IMAGES replaces READ_EXTERNAL_STORAGE on API 33+ -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <!-- WRITE_EXTERNAL_STORAGE only needed below API 29 -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28"
+        tools:ignore="ScopedStorage" />
+
+    <!-- Push notifications (required on API 33+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Vibration for SOS and hazard alerts -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Phone call for emergency dialing -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         APPLICATION
+    ════════════════════════════════════════════════════════════════════════ -->
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SafeRouteGIS"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="36">
+
+        <!-- ═══════════════════════════════════════════════════
+             Google Maps API Key
+             ▸ Replace YOUR_GOOGLE_MAPS_API_KEY in strings.xml
+             ▸ Enable in Google Cloud Console:
+               - Maps SDK for Android
+               - Directions API
+        ══════════════════════════════════════════════════════ -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <!-- ═══════════════════════════════════════════════════
+             FileProvider  (for sharing report images)
+        ══════════════════════════════════════════════════════ -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
+
+        <!-- ═══════════════════════════════════════════════════
+             ACTIVITIES
+        ══════════════════════════════════════════════════════ -->
+
+        <!-- Splash / entry point -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SafeRouteGIS.Splash"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Authentication -->
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Main features -->
+        <activity
+            android:name=".activities.DashboardActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.MapActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.ReportIssueActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".activities.AlertsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".activities.DirectionsActivity"
+            android:exported="false" />
+
+    </application>
+
+</manifest>

@@ -1,0 +1,35 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Outer circle -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="M54,10 C78.3,10 98,29.7 98,54 C98,78.3 78.3,98 54,98 C29.7,98 10,78.3 10,54 C10,29.7 29.7,10 54,10 Z" />
+
+    <!-- Inner circle -->
+    <path
+        android:fillColor="#42A5F5"
+        android:pathData="M54,17 C74.4,17 91,33.6 91,54 C91,74.4 74.4,91 54,91 C33.6,91 17,74.4 17,54 C17,33.6 33.6,17 54,17 Z" />
+
+    <!-- Road path - vertical -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M48,44 L48,80 C48,83 51,86 54,86 C57,86 60,83 60,80 L60,44 Z" />
+
+    <!-- Road dashes -->
+    <path android:fillColor="#42A5F5" android:pathData="M53,48 L55,48 L55,54 L53,54 Z" />
+    <path android:fillColor="#42A5F5" android:pathData="M53,58 L55,58 L55,64 L53,64 Z" />
+    <path android:fillColor="#42A5F5" android:pathData="M53,68 L55,68 L55,74 L53,74 Z" />
+
+    <!-- Location pin at top -->
+    <path
+        android:fillColor="#FFB300"
+        android:pathData="M54,24 C49,24 45,28 45,33 C45,40 54,48 54,48 C54,48 63,40 63,33 C63,28 59,24 54,24 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,29 C51.8,29 50,30.8 50,33 C50,35.2 51.8,37 54,37 C56.2,37 58,35.2 58,33 C58,30.8 56.2,29 54,29 Z" />
+
+</vector>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- AppBar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarMap"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@drawable/bg_gradient_primary"
+            app:titleTextColor="@color/colorTextOnPrimary"
+            app:navigationIconTint="#FFFFFF" />
+
+        <!-- Traffic layer toggle -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            android:background="@color/colorPrimaryDark"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/traffic_layer"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchTraffic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                app:thumbTint="@color/colorAccent"
+                app:trackTint="@color/colorPrimaryLight" />
+
+        </LinearLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Full-screen map -->
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <!-- ═══════════ Speed Monitor Overlay (top-right) ═══════════ -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardSpeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="110dp"
+        android:layout_marginEnd="12dp"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="#F0FFFFFF">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:minWidth="72dp">
+
+            <TextView
+                android:id="@+id/tvSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="km/h"
+                android:textColor="@color/colorTextHint"
+                android:textSize="10sp"
+                android:fontFamily="sans-serif" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Legend overlay (bottom-left) -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp"
+        app:cardBackgroundColor="#F0FFFFFF">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Legend"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/colorTextPrimary"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Accident -->
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:layout_marginBottom="5dp">
+                <View android:layout_width="14dp" android:layout_height="14dp"
+                    android:background="@color/colorAccident" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="  Accident" android:textSize="12sp" android:textColor="@color/colorTextPrimary"
+                    android:fontFamily="sans-serif" />
+            </LinearLayout>
+
+            <!-- Pothole -->
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:layout_marginBottom="5dp">
+                <View android:layout_width="14dp" android:layout_height="14dp"
+                    android:background="@color/colorPothole" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="  Pothole" android:textSize="12sp" android:textColor="@color/colorTextPrimary"
+                    android:fontFamily="sans-serif" />
+            </LinearLayout>
+
+            <!-- Construction -->
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:layout_marginBottom="5dp">
+                <View android:layout_width="14dp" android:layout_height="14dp"
+                    android:background="@color/colorConstruction" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="  Construction" android:textSize="12sp" android:textColor="@color/colorTextPrimary"
+                    android:fontFamily="sans-serif" />
+            </LinearLayout>
+
+            <!-- Traffic -->
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical">
+                <View android:layout_width="14dp" android:layout_height="14dp"
+                    android:background="@color/colorTraffic" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="  Traffic" android:textSize="12sp" android:textColor="@color/colorTextPrimary"
+                    android:fontFamily="sans-serif" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- ═══════════ Share Location FAB (above report FAB) ═══════════ -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabShareLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="88dp"
+        android:src="@drawable/ic_share_location"
+        android:contentDescription="Share location"
+        app:backgroundTint="#43A047"
+        app:tint="#FFFFFF"
+        app:fabSize="mini"
+        app:elevation="6dp" />
+
+    <!-- FAB: Report new issue -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabReportIssue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"
+        android:src="@android:drawable/ic_input_add"
+        android:contentDescription="Report issue"
+        app:backgroundTint="@color/colorPrimary"
+        app:tint="#FFFFFF"
+        app:elevation="8dp"
+        app:shapeAppearanceOverlay="@null" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

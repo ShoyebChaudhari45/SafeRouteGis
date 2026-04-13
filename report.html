@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Safety GIS — Technical Report</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --primary: #1565C0;
+            --primary-dark: #0D47A1;
+            --primary-light: #42A5F5;
+            --accent: #FFB300;
+            --danger: #D32F2F;
+            --success: #43A047;
+            --bg: #F5F7FA;
+            --card: #FFFFFF;
+            --text: #1A1A2E;
+            --text-secondary: #64748B;
+            --border: #E2E8F0;
+            --code-bg: #1E293B;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 0;
+        }
+
+        /* ─── Hero Header ─── */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, #0097A7 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50px; right: -50px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; left: -40px;
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+        }
+        .hero h1 { font-size: 2.5em; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+        .hero .subtitle { font-size: 1.1em; opacity: 0.85; font-weight: 300; }
+        .hero .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 16px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* ─── Container ─── */
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+        /* ─── Section ─── */
+        .section {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 28px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+        .section h2 {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section h3 {
+            font-size: 1.15em;
+            font-weight: 600;
+            color: var(--text);
+            margin: 24px 0 12px 0;
+        }
+
+        /* ─── Table of Contents ─── */
+        .toc {
+            background: linear-gradient(135deg, #E3F2FD, #F5F5F5);
+            border-radius: 14px;
+            padding: 24px 32px;
+            margin-bottom: 28px;
+        }
+        .toc h3 { color: var(--primary-dark); margin-bottom: 12px; margin-top: 0; }
+        .toc ol { padding-left: 20px; }
+        .toc li { margin: 6px 0; }
+        .toc a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .toc a:hover { color: var(--primary-dark); text-decoration: underline; }
+
+        /* ─── Code Block ─── */
+        pre {
+            background: var(--code-bg);
+            color: #E2E8F0;
+            padding: 20px 24px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.88em;
+            line-height: 1.6;
+            margin: 12px 0 16px 0;
+        }
+        code {
+            background: #EEF2FF;
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+
+        /* ─── Table ─── */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 12px 0 16px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        th {
+            background: var(--primary);
+            color: white;
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95em;
+        }
+        tr:nth-child(even) td { background: #F8FAFC; }
+        tr:last-child td { border-bottom: none; }
+
+        /* ─── Tags ─── */
+        .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .tag-java { background: #FFF3E0; color: #E65100; }
+        .tag-xml { background: #E3F2FD; color: #1565C0; }
+        .tag-db { background: #E8F5E9; color: #2E7D32; }
+        .tag-util { background: #F3E5F5; color: #7B1FA2; }
+        .tag-new { background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; }
+        .tag-modified { background: #FFF8E1; color: #F57F17; border: 1px solid #FFE082; }
+
+        /* ─── File Card ─── */
+        .file-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            background: #FAFBFC;
+            transition: box-shadow 0.2s;
+        }
+        .file-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .file-card .file-name {
+            font-weight: 700;
+            font-size: 1.05em;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .file-card .file-path {
+            font-size: 0.82em;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+        .file-card p { margin: 6px 0; color: #334155; }
+        .file-card ul { padding-left: 18px; margin: 6px 0; }
+        .file-card li { margin: 4px 0; color: #475569; }
+
+        /* ─── Feature Grid ─── */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        .feature-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .feature-item .icon { font-size: 2em; margin-bottom: 8px; }
+        .feature-item h4 { font-weight: 600; margin-bottom: 6px; color: var(--text); }
+        .feature-item p { font-size: 0.9em; color: var(--text-secondary); }
+
+        /* ─── Color Swatch ─── */
+        .color-grid { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; }
+        .color-swatch {
+            width: 80px;
+            text-align: center;
+        }
+        .color-swatch .box {
+            width: 60px; height: 60px;
+            border-radius: 12px;
+            margin: 0 auto 6px auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .color-swatch .label { font-size: 0.75em; color: var(--text-secondary); font-weight: 600; }
+
+        /* ─── Alert ─── */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin: 12px 0;
+            border-left: 4px solid;
+        }
+        .alert-info { background: #E3F2FD; border-color: var(--primary); }
+        .alert-warning { background: #FFF8E1; border-color: #F57F17; }
+        .alert-success { background: #E8F5E9; border-color: var(--success); }
+        .alert-danger { background: #FFEBEE; border-color: var(--danger); }
+        .alert strong { display: block; margin-bottom: 4px; }
+
+        /* ─── Flow Diagram ─── */
+        .flow-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .flow-box {
+            background: var(--primary-light);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .flow-arrow { font-size: 1.4em; color: var(--text-secondary); }
+
+        /* ─── Footer ─── */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        /* Print styles */
+        @media print {
+            .hero { padding: 30px 20px; }
+            .section { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+            body { background: white; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--                            HERO HEADER                                -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div class="hero">
+    <h1>🛡️ Road Safety GIS</h1>
+    <div class="subtitle">Comprehensive Technical Report & Code Documentation</div>
+    <div class="badge">Android • Java • Google Maps SDK • Material Design 3</div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════ TABLE OF CONTENTS ═══════════ -->
+<div class="toc">
+    <h3>📑 Table of Contents</h3>
+    <ol>
+        <li><a href="#overview">Project Overview</a></li>
+        <li><a href="#architecture">Architecture & Design</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#tech-stack">Technology Stack</a></li>
+        <li><a href="#project-structure">Project Structure</a></li>
+        <li><a href="#activities">Activities (Screens)</a></li>
+        <li><a href="#models">Data Models</a></li>
+        <li><a href="#database">Database Layer</a></li>
+        <li><a href="#adapters">Adapters</a></li>
+        <li><a href="#utilities">Utility Classes</a></li>
+        <li><a href="#layouts">XML Layouts & Drawables</a></li>
+        <li><a href="#design-system">Design System</a></li>
+        <li><a href="#permissions">Permissions & Security</a></li>
+        <li><a href="#setup">Setup & Configuration</a></li>
+        <li><a href="#app-flow">Application Flow</a></li>
+    </ol>
+</div>
+
+<!-- ═══════════ 1. PROJECT OVERVIEW ═══════════ -->
+<div class="section" id="overview">
+    <h2>1️⃣ Project Overview</h2>
+    <p><strong>Road Safety GIS</strong> is a native Android application designed to promote road safety through community-driven hazard reporting and real-time map visualization. Users can report accidents, potholes, construction zones, and traffic congestion—all pinned to GPS coordinates and displayed on a live Google Map.</p>
+
+    <div class="alert alert-info">
+        <strong>💡 Why this project matters</strong>
+        In India alone, over 1.5 lakh road accidents happen annually. This app empowers citizens to share real-time road conditions, helping save lives through awareness and preparedness.
+    </div>
+
+    <h3>Key Highlights</h3>
+    <ul>
+        <li><strong>Real-time hazard mapping</strong> with color-coded zones (red=accident, orange=pothole, amber=construction, blue=traffic)</li>
+        <li><strong>Emergency features</strong> — SOS with Morse code vibration, one-tap emergency call to 112</li>
+        <li><strong>Speed monitoring</strong> on the map with overspeed color warnings</li>
+        <li><strong>Shake-to-Report</strong> — just shake your phone on the map to quickly report a hazard</li>
+        <li><strong>Nearby services</strong> — find police, hospitals, and gas stations instantly</li>
+        <li><strong>Dark mode</strong> support for nighttime driving</li>
+        <li><strong>Offline capable</strong> — all reports stored in local SQLite database</li>
+    </ul>
+</div>
+
+<!-- ═══════════ 2. ARCHITECTURE ═══════════ -->
+<div class="section" id="architecture">
+    <h2>2️⃣ Architecture & Design</h2>
+
+    <p>The app follows the <strong>MVC (Model-View-Controller)</strong> pattern adapted for Android:</p>
+
+    <table>
+        <tr><th>Layer</th><th>Components</th><th>Responsibility</th></tr>
+        <tr><td><strong>Model</strong></td><td><code>User.java</code>, <code>Report.java</code></td><td>Data structures, constants, labels</td></tr>
+        <tr><td><strong>View</strong></td><td>XML layouts, drawables, colors</td><td>UI rendering, visual design</td></tr>
+        <tr><td><strong>Controller</strong></td><td>Activities, Adapters</td><td>Business logic, user interaction</td></tr>
+        <tr><td><strong>Data Access</strong></td><td><code>DatabaseHelper.java</code></td><td>SQLite CRUD operations</td></tr>
+        <tr><td><strong>Utilities</strong></td><td><code>SessionManager</code>, <code>NotificationHelper</code>, etc.</td><td>Cross-cutting concerns</td></tr>
+    </table>
+
+    <h3>Data Flow</h3>
+    <div class="flow-row">
+        <div class="flow-box">User Action</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Activity</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">DatabaseHelper</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">SQLite</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">UI Update</div>
+    </div>
+</div>
+
+<!-- ═══════════ 3. FEATURES ═══════════ -->
+<div class="section" id="features">
+    <h2>3️⃣ Features</h2>
+
+    <div class="feature-grid">
+        <div class="feature-item">
+            <div class="icon">🗺️</div>
+            <h4>Live Map</h4>
+            <p>Google Maps with colored circle overlays showing hazard zones. Circle radius scales with severity.</p>
+        </div>
+        <div class="feature-item">
+            <div class="icon">🏎️</div>
+            <h4>Speed Monitor</h4>
+            <p>Real-time GPS speed in km/h. Changes to orange > 60 and red > 80 km/h.</p>
+        </div>
+        <div class="feature-item">
+            <div class="icon">📳</div>
+            <h4>Shake to Report</h4>
+            <p>Shake your phone on the map screen to instantly open the report form.</p>
+        </div>
+        <div class="feature-item">
+            <div class="icon">🆘</div>
+            <h4>SOS Alert</h4>
+            <p>Emergency SOS with Morse code vibration pattern (... --- ...). Confirms with dialog.</p>
+        </div>
+        <div class="feature-item">
+            <div class="icon">📞</div>
+            <h4>Emergency Call</h4>
+            <p>One-tap dial to 112 with confirmation dialog for safety.</p>
+        </div>
+        <div class="feature-item">
+            <div class="icon">📍</div>
+            <h4>Share Location</h4>
+            <p>Share your GPS coordinates as a Google Maps link via SMS, WhatsApp, etc.</p>
+        </div>
+        <div class="feature-item">
+            <div class="icon">🏥</div>
+            <h4>Nearby Services</h4>
+            <p>Find police stations, hospitals, and gas stations near you via Google Maps.</p>
+        </div>
+        <div class="feature-item">
+            <div class="icon">🌙</div>
+            <h4>Dark Mode</h4>
+            <p>Toggle dark theme from Profile → Preferences. Persisted in SharedPreferences.</p>
+        </div>
+        <div class="feature-item">
+            <div class="icon">🔔</div>
+            <h4>Vibration Alerts</h4>
+            <p>Phone vibrates when nearby hazards are detected. Configurable in settings.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ 4. TECH STACK ═══════════ -->
+<div class="section" id="tech-stack">
+    <h2>4️⃣ Technology Stack</h2>
+    <table>
+        <tr><th>Technology</th><th>Version</th><th>Purpose</th></tr>
+        <tr><td>Java</td><td>11</td><td>Primary programming language</td></tr>
+        <tr><td>Android SDK</td><td>API 24–36</td><td>Native Android development</td></tr>
+        <tr><td>Material Design</td><td>3</td><td>UI components (cards, chips, switches, FABs)</td></tr>
+        <tr><td>Google Maps SDK</td><td>Latest</td><td>Map display, markers, circles, traffic</td></tr>
+        <tr><td>Play Services Location</td><td>Latest</td><td>FusedLocationProvider, GPS speed</td></tr>
+        <tr><td>SQLite</td><td>Built-in</td><td>Local database for users and reports</td></tr>
+        <tr><td>OkHttp</td><td>4.x</td><td>HTTP client for Directions API</td></tr>
+        <tr><td>Glide</td><td>4.x</td><td>Image loading for report photos</td></tr>
+        <tr><td>Gradle</td><td>8.13</td><td>Build system</td></tr>
+    </table>
+</div>
+
+<!-- ═══════════ 5. PROJECT STRUCTURE ═══════════ -->
+<div class="section" id="project-structure">
+    <h2>5️⃣ Project Structure</h2>
+<pre><code>app/src/main/
+├── java/com/example/saferoutegis/
+│   ├── 📱 MainActivity.java              ← Splash screen entry point
+│   ├── activities/
+│   │   ├── LoginActivity.java            ← User login
+│   │   ├── RegisterActivity.java         ← New user registration
+│   │   ├── DashboardActivity.java        ← Home: cards + emergency + services
+│   │   ├── MapActivity.java              ← Map + speed + shake + circles
+│   │   ├── AlertsActivity.java           ← Filterable hazard alerts
+│   │   ├── ReportIssueActivity.java      ← Submit new hazard reports
+│   │   ├── DirectionsActivity.java       ← Turn-by-turn directions
+│   │   └── ProfileActivity.java          ← Profile + dark mode + preferences
+│   ├── adapters/
+│   │   └── AlertsAdapter.java            ← RecyclerView adapter for alerts
+│   ├── database/
+│   │   └── DatabaseHelper.java           ← SQLite database operations
+│   ├── models/
+│   │   ├── User.java                     ← User data model
+│   │   └── Report.java                   ← Report data model
+│   └── utils/
+│       ├── Constants.java                ← App-wide configuration
+│       ├── SessionManager.java           ← Login session management
+│       ├── NotificationHelper.java       ← Notifications + vibration
+│       ├── LocationHelper.java           ← GPS utilities
+│       └── PasswordUtils.java            ← Bcrypt password hashing
+│
+├── res/
+│   ├── layout/                           ← XML screen layouts
+│   ├── drawable/                         ← Icons, gradients, backgrounds
+│   ├── color/                            ← Color state lists
+│   ├── menu/                             ← Navigation & toolbar menus
+│   ├── values/                           ← Strings, colors, themes
+│   └── xml/                              ← File provider paths, backup rules
+│
+└── AndroidManifest.xml                   ← App config, permissions, activities</code></pre>
+</div>
+
+<!-- ═══════════ 6. ACTIVITIES ═══════════ -->
+<div class="section" id="activities">
+    <h2>6️⃣ Activities (Screens) — Detailed Explanation</h2>
+
+    <!-- MainActivity -->
+    <div class="file-card">
+        <div class="file-name">📱 MainActivity.java <span class="tag tag-modified">MODIFIED</span></div>
+        <div class="file-path">com.example.saferoutegis.MainActivity</div>
+        <p><strong>Purpose:</strong> App's splash/launcher screen. First thing users see.</p>
+        <p><strong>What it does:</strong></p>
+        <ul>
+            <li>Shows a gradient background with decorative circles and glowing logo</li>
+            <li>Animates the logo with a <strong>bounce effect</strong> using <code>OvershootInterpolator</code></li>
+            <li>Staggered animations: Logo (0ms) → Glow (200ms) → Name (400ms) → Tagline (700ms) → Features (1000ms)</li>
+            <li>Creates the notification channel at startup via <code>NotificationHelper.createNotificationChannel()</code></li>
+            <li>After 2.8 seconds, checks <code>SessionManager.isLoggedIn()</code> and routes accordingly</li>
+        </ul>
+        <p><strong>Key Methods:</strong></p>
+        <ul>
+            <li><code>buildBounceIn()</code> — Creates a scale animation with overshoot for the logo</li>
+            <li><code>buildFadeScaleIn()</code> — Standard fade + scale animation for text elements</li>
+            <li><code>navigateNext()</code> — Routes to Dashboard or Login based on session</li>
+        </ul>
+    </div>
+
+    <!-- DashboardActivity -->
+    <div class="file-card">
+        <div class="file-name">🏠 DashboardActivity.java <span class="tag tag-modified">MODIFIED</span></div>
+        <div class="file-path">com.example.saferoutegis.activities.DashboardActivity</div>
+        <p><strong>Purpose:</strong> Main home screen after login. The app's central hub.</p>
+        <p><strong>Sections in the layout:</strong></p>
+        <ul>
+            <li>📊 <strong>Header</strong> — Gradient with personalized "Hello, {name}!" + active alert count badge</li>
+            <li>🃏 <strong>Feature Cards</strong> — 7 cards: Live Map, Traffic, Safe Routes, Accidents, Potholes, Construction, Directions</li>
+            <li>🆘 <strong>Emergency</strong> — Emergency Call 112 + SOS Alert (side-by-side red cards)</li>
+            <li>📍 <strong>Share Location</strong> — Green card that shares GPS via any app</li>
+            <li>🏥 <strong>Nearby Services</strong> — Police 🚔, Hospital 🏥, Fuel ⛽ cards</li>
+            <li>💡 <strong>Safety Tips</strong> — Green info card with safety advice</li>
+            <li>📱 <strong>Bottom Nav</strong> — Home, Map, Report, Alerts, Profile</li>
+        </ul>
+        <p><strong>Key Methods:</strong></p>
+        <ul>
+            <li><code>dialEmergency()</code> — Shows confirmation dialog, then opens dialer with <code>ACTION_DIAL</code></li>
+            <li><code>triggerSOS()</code> — Vibrates with Morse SOS pattern → shows emergency dialog</li>
+            <li><code>shareCurrentLocation()</code> — Gets GPS, creates Google Maps link, opens share intent</li>
+            <li><code>searchNearby(query)</code> — Opens Google Maps app with "police station near me" etc.</li>
+            <li><code>vibratePhone()</code> — Creates Morse SOS vibration: <code>{0, 100, 100, 100, 100, 100, 200, 300, ...}</code></li>
+        </ul>
+    </div>
+
+    <!-- MapActivity -->
+    <div class="file-card">
+        <div class="file-name">🗺️ MapActivity.java <span class="tag tag-modified">MODIFIED</span></div>
+        <div class="file-path">com.example.saferoutegis.activities.MapActivity</div>
+        <p><strong>Purpose:</strong> Live Google Map with hazard visualization and safety tools.</p>
+        <p><strong>Implements:</strong> <code>OnMapReadyCallback</code>, <code>SensorEventListener</code></p>
+
+        <div class="alert alert-success">
+            <strong>🏎️ Speed Monitor</strong>
+            Uses <code>LocationCallback</code> with 2-second intervals. Converts <code>location.getSpeed()</code> from m/s to km/h. Changes color: normal (black) → orange (>60 km/h) → red (>80 km/h).
+        </div>
+
+        <div class="alert alert-warning">
+            <strong>📳 Shake to Report</strong>
+            Registers accelerometer sensor. Calculates acceleration magnitude minus gravity. If > 12.0 threshold and last shake was > 2 seconds ago → vibrates + opens ReportIssueActivity.
+        </div>
+
+        <p><strong>Colored Circle Overlays:</strong></p>
+        <ul>
+            <li>Each hazard marker has a semi-transparent colored circle around it</li>
+            <li><code>fillColor</code> = 20% opacity of the base type color</li>
+            <li><code>strokeColor</code> = 60% opacity with 2px width</li>
+            <li>Radius scales with severity: Low=150m, Medium=200m, High=300m</li>
+        </ul>
+
+        <p><strong>Key Methods:</strong></p>
+        <ul>
+            <li><code>loadReportMarkers()</code> — Draws markers + circles on background thread, then UI thread</li>
+            <li><code>updateSpeed(Location)</code> — Calculates speed, updates TV, changes color</li>
+            <li><code>onSensorChanged(SensorEvent)</code> — Shake detection core logic</li>
+            <li><code>shareCurrentLocation()</code> — Creates shareable Google Maps link</li>
+            <li><code>checkNearbyHazards(Location)</code> — Queries DB for nearby reports, sends notification</li>
+        </ul>
+    </div>
+
+    <!-- AlertsActivity -->
+    <div class="file-card">
+        <div class="file-name">🚨 AlertsActivity.java <span class="tag tag-modified">MODIFIED</span></div>
+        <div class="file-path">com.example.saferoutegis.activities.AlertsActivity</div>
+        <p><strong>Purpose:</strong> Displays all road hazard reports in a filterable RecyclerView.</p>
+        <p><strong>Filter Chips:</strong> Uses Material <code>ChipGroup</code> with <code>Chip.Choice</code> style. Chips use <code>ColorStateList</code> for proper white-on-blue text visibility.</p>
+        <p><strong>Pre-filtering:</strong> Can receive <code>EXTRA_FILTER_TYPE</code> intent extra from Dashboard cards to show only one type.</p>
+    </div>
+
+    <!-- ProfileActivity -->
+    <div class="file-card">
+        <div class="file-name">👤 ProfileActivity.java <span class="tag tag-modified">MODIFIED</span></div>
+        <div class="file-path">com.example.saferoutegis.activities.ProfileActivity</div>
+        <p><strong>Purpose:</strong> User profile screen with settings and preferences.</p>
+        <p><strong>Sections:</strong></p>
+        <ul>
+            <li>📱 Avatar with user's first initial in a circle</li>
+            <li>📊 Statistics card — report count + member since date</li>
+            <li>📝 Account Details with inline edit mode (name + phone)</li>
+            <li>⚙️ <strong>Preferences</strong> — Dark Mode toggle + Notifications toggle</li>
+            <li>ℹ️ <strong>About</strong> — App version + Rate this app link</li>
+            <li>🔴 Logout button</li>
+        </ul>
+        <p><strong>Dark Mode:</strong> Uses <code>AppCompatDelegate.setDefaultNightMode()</code>. State saved in SharedPreferences (<code>"app_settings"</code>).</p>
+    </div>
+
+    <!-- Other Activities -->
+    <div class="file-card">
+        <div class="file-name">🔐 LoginActivity.java / RegisterActivity.java</div>
+        <div class="file-path">Authentication screens</div>
+        <p>Standard email/password login and registration forms. Passwords hashed via <code>PasswordUtils</code>. On success, creates a session via <code>SessionManager.createLoginSession()</code>.</p>
+    </div>
+
+    <div class="file-card">
+        <div class="file-name">📝 ReportIssueActivity.java</div>
+        <div class="file-path">Hazard report submission</div>
+        <p>Form with issue type spinner, title, description, severity radio buttons, GPS location auto-detect, optional photo upload. Saves to SQLite and shows a notification.</p>
+    </div>
+
+    <div class="file-card">
+        <div class="file-name">🧭 DirectionsActivity.java</div>
+        <div class="file-path">Turn-by-turn directions</div>
+        <p>Origin/destination input → calls Google Directions API via OkHttp. Falls back to opening Google Maps app if API key restrictions block REST calls.</p>
+    </div>
+</div>
+
+<!-- ═══════════ 7. MODELS ═══════════ -->
+<div class="section" id="models">
+    <h2>7️⃣ Data Models</h2>
+
+    <div class="file-card">
+        <div class="file-name">📋 User.java <span class="tag tag-java">Model</span></div>
+        <p><strong>Fields:</strong> <code>id</code>, <code>name</code>, <code>email</code>, <code>password</code>, <code>phone</code>, <code>createdAt</code></p>
+        <p>Standard POJO with getters/setters. Represents a registered user.</p>
+    </div>
+
+    <div class="file-card">
+        <div class="file-name">📋 Report.java <span class="tag tag-java">Model</span></div>
+        <p><strong>Fields:</strong> <code>id</code>, <code>userId</code>, <code>title</code>, <code>description</code>, <code>type</code>, <code>severity</code>, <code>latitude</code>, <code>longitude</code>, <code>imagePath</code>, <code>timestamp</code>, <code>userName</code></p>
+        <p><strong>Constants:</strong></p>
+<pre><code>// Type constants
+public static final String TYPE_ACCIDENT     = "ACCIDENT";
+public static final String TYPE_POTHOLE      = "POTHOLE";
+public static final String TYPE_CONSTRUCTION = "CONSTRUCTION";
+public static final String TYPE_TRAFFIC      = "TRAFFIC";
+
+// Severity levels
+public static final int SEVERITY_LOW    = 0;
+public static final int SEVERITY_MEDIUM = 1;
+public static final int SEVERITY_HIGH   = 2;</code></pre>
+        <p><strong>Helper Methods:</strong> <code>getTypeLabel()</code> returns human-readable type, <code>getSeverityLabel()</code> returns "Low"/"Medium"/"High".</p>
+    </div>
+</div>
+
+<!-- ═══════════ 8. DATABASE ═══════════ -->
+<div class="section" id="database">
+    <h2>8️⃣ Database Layer</h2>
+
+    <div class="file-card">
+        <div class="file-name">🗃️ DatabaseHelper.java <span class="tag tag-db">SQLite</span></div>
+        <div class="file-path">com.example.saferoutegis.database.DatabaseHelper</div>
+        <p><strong>Pattern:</strong> Singleton (thread-safe via <code>getInstance()</code>)</p>
+        <p><strong>Database:</strong> <code>SafeRouteGIS.db</code></p>
+        <p><strong>Tables:</strong></p>
+
+        <table>
+            <tr><th>Table</th><th>Key Columns</th></tr>
+            <tr><td><strong>users</strong></td><td>id, name, email, password (hashed), phone, created_at</td></tr>
+            <tr><td><strong>reports</strong></td><td>id, user_id (FK), title, type, severity, lat, lng, image, timestamp</td></tr>
+        </table>
+
+        <p><strong>Key Public Methods:</strong></p>
+        <table>
+            <tr><th>Method</th><th>What it does</th></tr>
+            <tr><td><code>insertUser(User)</code></td><td>Registers a new user. Returns row ID or -1.</td></tr>
+            <tr><td><code>getUserByEmail(email, password)</code></td><td>Login validation with password check.</td></tr>
+            <tr><td><code>insertReport(Report)</code></td><td>Saves a new hazard report with GPS coords.</td></tr>
+            <tr><td><code>getAllReports()</code></td><td>Returns all reports joined with user names.</td></tr>
+            <tr><td><code>getNearbyReports(lat, lng, radiusKm)</code></td><td>Returns reports within radius using distance formula.</td></tr>
+            <tr><td><code>getReportCountByUserId(userId)</code></td><td>Returns count for a specific user (profile stats).</td></tr>
+        </table>
+    </div>
+</div>
+
+<!-- ═══════════ 9. ADAPTERS ═══════════ -->
+<div class="section" id="adapters">
+    <h2>9️⃣ Adapters</h2>
+
+    <div class="file-card">
+        <div class="file-name">📋 AlertsAdapter.java <span class="tag tag-java">Adapter</span></div>
+        <p><strong>Purpose:</strong> Bridges the list of <code>Report</code> objects to the RecyclerView in AlertsActivity.</p>
+        <p><strong>Key Features:</strong></p>
+        <ul>
+            <li><strong>Dual list pattern:</strong> <code>fullList</code> (all data) + <code>displayList</code> (filtered view)</li>
+            <li><code>filterByType(String type)</code> — Filters displayList from fullList based on type. Pass "ALL" to reset.</li>
+            <li>Color-coded type indicator bar on the left edge of each card</li>
+            <li>Type badge (colored pill) and severity badge (colored pill) with <code>GradientDrawable</code></li>
+            <li>Dynamic icon per type using <code>typeIcon()</code></li>
+        </ul>
+        <p><strong>ViewHolder binds:</strong> title, timestamp, type badge, severity badge, description, reporter name, icon</p>
+    </div>
+</div>
+
+<!-- ═══════════ 10. UTILITIES ═══════════ -->
+<div class="section" id="utilities">
+    <h2>🔟 Utility Classes</h2>
+
+    <div class="file-card">
+        <div class="file-name">⚙️ Constants.java <span class="tag tag-util">Config</span></div>
+        <p>Central configuration file. Contains API URLs, permission request codes, SharedPreferences keys, map defaults, notification channel info, and hazard search radius.</p>
+    </div>
+
+    <div class="file-card">
+        <div class="file-name">🔐 SessionManager.java <span class="tag tag-util">Auth</span></div>
+        <p>Manages login state via <code>SharedPreferences</code>. Stores user ID, email, and name. Provides <code>isLoggedIn()</code>, <code>getUserId()</code>, <code>logout()</code>.</p>
+    </div>
+
+    <div class="file-card">
+        <div class="file-name">🔔 NotificationHelper.java <span class="tag tag-modified">MODIFIED</span></div>
+        <p><strong>Purpose:</strong> Sends local notifications with vibration and sound.</p>
+        <p><strong>What's Special:</strong></p>
+        <ul>
+            <li>Channel set to <code>IMPORTANCE_HIGH</code> for heads-up notifications</li>
+            <li>Vibration pattern: <code>{0, 200, 100, 400}</code> (short buzz, pause, long buzz)</li>
+            <li><code>vibrateDevice(Context)</code> — Reusable static method used by Map, Dashboard, SOS</li>
+            <li>Checks <code>POST_NOTIFICATIONS</code> permission on API 33+</li>
+        </ul>
+    </div>
+
+    <div class="file-card">
+        <div class="file-name">📍 LocationHelper.java <span class="tag tag-util">GPS</span></div>
+        <p>Static helpers for GPS location. Used by ReportIssueActivity for auto-detecting coordinates.</p>
+    </div>
+
+    <div class="file-card">
+        <div class="file-name">🔒 PasswordUtils.java <span class="tag tag-util">Security</span></div>
+        <p>Handles password hashing and verification. Ensures passwords are never stored in plain text in SQLite.</p>
+    </div>
+</div>
+
+<!-- ═══════════ 11. LAYOUTS ═══════════ -->
+<div class="section" id="layouts">
+    <h2>1️⃣1️⃣ XML Layouts & Drawables</h2>
+
+    <h3>Screen Layouts</h3>
+    <table>
+        <tr><th>File</th><th>Screen</th><th>Root Layout</th></tr>
+        <tr><td><code>activity_main.xml</code></td><td>Splash Screen</td><td>ConstraintLayout with gradient + decorative circles</td></tr>
+        <tr><td><code>activity_dashboard.xml</code></td><td>Dashboard</td><td>ConstraintLayout → NestedScrollView + BottomNavigationView</td></tr>
+        <tr><td><code>activity_map.xml</code></td><td>Live Map</td><td>CoordinatorLayout with AppBar + MapFragment + Speed card + FABs</td></tr>
+        <tr><td><code>activity_alerts.xml</code></td><td>Road Alerts</td><td>CoordinatorLayout with ChipGroup + RecyclerView</td></tr>
+        <tr><td><code>activity_report_issue.xml</code></td><td>Report Form</td><td>CoordinatorLayout with ScrollView form</td></tr>
+        <tr><td><code>activity_directions.xml</code></td><td>Directions</td><td>CoordinatorLayout with input fields + MapFragment</td></tr>
+        <tr><td><code>activity_profile.xml</code></td><td>Profile</td><td>CoordinatorLayout with gradient header + card sections</td></tr>
+        <tr><td><code>activity_login.xml</code></td><td>Login</td><td>ScrollView with gradient header + form card</td></tr>
+        <tr><td><code>activity_register.xml</code></td><td>Register</td><td>ScrollView with form card</td></tr>
+        <tr><td><code>item_alert.xml</code></td><td>Alert Item</td><td>CardView with type indicator bar + icon + badges</td></tr>
+    </table>
+
+    <h3>Key Drawables</h3>
+    <table>
+        <tr><th>File</th><th>Type</th><th>Usage</th></tr>
+        <tr><td><code>ic_app_logo.xml</code></td><td>Vector</td><td>Circular app logo with road + location pin</td></tr>
+        <tr><td><code>ic_launcher_foreground.xml</code></td><td>Vector</td><td>Adaptive launcher icon foreground</td></tr>
+        <tr><td><code>bg_splash_gradient.xml</code></td><td>Gradient</td><td>3-color diagonal gradient: dark blue → blue → teal</td></tr>
+        <tr><td><code>bg_card_emergency.xml</code></td><td>Gradient</td><td>Red gradient for SOS buttons</td></tr>
+        <tr><td><code>ic_sos.xml</code></td><td>Vector</td><td>Warning triangle icon</td></tr>
+        <tr><td><code>ic_emergency_call.xml</code></td><td>Vector</td><td>Phone icon for emergency calling</td></tr>
+        <tr><td><code>ic_share_location.xml</code></td><td>Vector</td><td>Share nodes icon for location sharing</td></tr>
+        <tr><td><code>bg_icon_circle.xml</code></td><td>Shape</td><td>Circular background for alert item icons</td></tr>
+    </table>
+</div>
+
+<!-- ═══════════ 12. DESIGN SYSTEM ═══════════ -->
+<div class="section" id="design-system">
+    <h2>1️⃣2️⃣ Design System</h2>
+
+    <h3>Color Palette</h3>
+    <div class="color-grid">
+        <div class="color-swatch"><div class="box" style="background:#0D47A1"></div><div class="label">Dark Blue<br>#0D47A1</div></div>
+        <div class="color-swatch"><div class="box" style="background:#1565C0"></div><div class="label">Primary<br>#1565C0</div></div>
+        <div class="color-swatch"><div class="box" style="background:#42A5F5"></div><div class="label">Light Blue<br>#42A5F5</div></div>
+        <div class="color-swatch"><div class="box" style="background:#FFB300"></div><div class="label">Accent<br>#FFB300</div></div>
+        <div class="color-swatch"><div class="box" style="background:#D32F2F"></div><div class="label">Danger<br>#D32F2F</div></div>
+        <div class="color-swatch"><div class="box" style="background:#43A047"></div><div class="label">Success<br>#43A047</div></div>
+        <div class="color-swatch"><div class="box" style="background:#F57C00"></div><div class="label">Orange<br>#F57C00</div></div>
+        <div class="color-swatch"><div class="box" style="background:#FBC02D"></div><div class="label">Amber<br>#FBC02D</div></div>
+    </div>
+
+    <h3>Map Circle Legend</h3>
+    <table>
+        <tr><th>Type</th><th>Color</th><th>Hex</th><th>Fill Opacity</th><th>Stroke Opacity</th></tr>
+        <tr><td>🔴 Accident</td><td><div style="display:inline-block;width:20px;height:20px;border-radius:50%;background:#E53935"></div></td><td>#E53935</td><td>20%</td><td>60%</td></tr>
+        <tr><td>🟠 Pothole</td><td><div style="display:inline-block;width:20px;height:20px;border-radius:50%;background:#F57C00"></div></td><td>#F57C00</td><td>20%</td><td>60%</td></tr>
+        <tr><td>🟡 Construction</td><td><div style="display:inline-block;width:20px;height:20px;border-radius:50%;background:#FBC02D"></div></td><td>#FBC02D</td><td>20%</td><td>60%</td></tr>
+        <tr><td>🔵 Traffic</td><td><div style="display:inline-block;width:20px;height:20px;border-radius:50%;background:#1E88E5"></div></td><td>#1E88E5</td><td>20%</td><td>60%</td></tr>
+    </table>
+</div>
+
+<!-- ═══════════ 13. PERMISSIONS ═══════════ -->
+<div class="section" id="permissions">
+    <h2>1️⃣3️⃣ Permissions & Security</h2>
+    <table>
+        <tr><th>Permission</th><th>Why</th><th>When Requested</th></tr>
+        <tr><td><code>ACCESS_FINE_LOCATION</code></td><td>GPS for map, speed, reports</td><td>On map/report screen open</td></tr>
+        <tr><td><code>ACCESS_COARSE_LOCATION</code></td><td>Approximate location fallback</td><td>Same as above</td></tr>
+        <tr><td><code>POST_NOTIFICATIONS</code></td><td>Hazard alert notifications</td><td>API 33+ on first notification</td></tr>
+        <tr><td><code>VIBRATE</code></td><td>SOS and alert vibration</td><td>Auto-granted (normal permission)</td></tr>
+        <tr><td><code>CALL_PHONE</code></td><td>Emergency 112 dialing</td><td>Uses ACTION_DIAL (no permission needed)</td></tr>
+        <tr><td><code>INTERNET</code></td><td>Maps, Directions API</td><td>Auto-granted</td></tr>
+    </table>
+
+    <div class="alert alert-info">
+        <strong>🔒 Security Note</strong>
+        Passwords are hashed with PasswordUtils before storage. The app uses <code>ACTION_DIAL</code> (not <code>ACTION_CALL</code>) for emergency calls, which opens the dialer but doesn't auto-dial without user confirmation.
+    </div>
+</div>
+
+<!-- ═══════════ 14. SETUP ═══════════ -->
+<div class="section" id="setup">
+    <h2>1️⃣4️⃣ Setup & Configuration</h2>
+
+    <h3>Step 1: Clone & Open</h3>
+<pre><code>git clone &lt;repository-url&gt;
+# Open in Android Studio → File → Open → Select project folder</code></pre>
+
+    <h3>Step 2: API Key</h3>
+    <p>Edit <code>app/src/main/res/values/strings.xml</code> and replace:</p>
+<pre><code>&lt;string name="google_maps_key"&gt;YOUR_API_KEY_HERE&lt;/string&gt;</code></pre>
+
+    <h3>Step 3: Enable Google APIs</h3>
+    <ol>
+        <li>Go to <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></li>
+        <li>Enable <strong>Maps SDK for Android</strong></li>
+        <li>Enable <strong>Directions API</strong></li>
+        <li>Enable <strong>Geolocation API</strong> (optional)</li>
+    </ol>
+
+    <h3>Step 4: Build & Run</h3>
+    <p>Click <strong>Run ▶️</strong> in Android Studio. Use a physical device for GPS and shake features.</p>
+
+    <div class="alert alert-warning">
+        <strong>⚠️ Important</strong>
+        Speed monitor and shake-to-report features require a physical device. Emulators simulate GPS but not accelerometer shake.
+    </div>
+</div>
+
+<!-- ═══════════ 15. APP FLOW ═══════════ -->
+<div class="section" id="app-flow">
+    <h2>1️⃣5️⃣ Application Flow</h2>
+
+    <h3>User Journey</h3>
+    <div class="flow-row">
+        <div class="flow-box">App Launch<br>🚀 Splash</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Login /<br>Register</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Dashboard<br>🏠 Home</div>
+    </div>
+
+    <h3>From Dashboard, users can:</h3>
+    <div class="flow-row">
+        <div class="flow-box">🗺️ Map<br>View hazards</div>
+        <div class="flow-box">📝 Report<br>Submit issue</div>
+        <div class="flow-box">🚨 Alerts<br>Browse all</div>
+        <div class="flow-box">🆘 SOS<br>Emergency</div>
+        <div class="flow-box">👤 Profile<br>Settings</div>
+    </div>
+
+    <h3>Report Submission Flow</h3>
+    <div class="flow-row">
+        <div class="flow-box">Open Form</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Select Type<br>& Severity</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Auto GPS<br>Location</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Save to<br>SQLite</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Show on<br>Map 🗺️</div>
+    </div>
+
+    <h3>Hazard Detection Flow</h3>
+    <div class="flow-row">
+        <div class="flow-box">Open Map</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Get GPS<br>Location</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Query DB<br>2km radius</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">📳 Vibrate<br>+ Notification</div>
+    </div>
+</div>
+
+</div> <!-- /container -->
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<div class="footer">
+    <p>🛡️ <strong>Road Safety GIS</strong> — Technical Report</p>
+    <p>Built with Java • Android SDK • Google Maps • Material Design 3</p>
+    <p style="margin-top:8px;color:#94A3B8;">Generated on April 2026</p>
+</div>
+
+</body>
+</html>

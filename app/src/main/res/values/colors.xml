@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ═══════════════════════════════════════════
+         PRIMARY PALETTE  (Deep Blue → Teal)
+    ════════════════════════════════════════════ -->
+    <color name="colorPrimary">#1565C0</color>
+    <color name="colorPrimaryDark">#0D47A1</color>
+    <color name="colorPrimaryLight">#42A5F5</color>
+    <color name="colorPrimaryVariant">#0A3D91</color>
+
+    <!-- Gradient endpoints -->
+    <color name="colorGradientStart">#0D47A1</color>
+    <color name="colorGradientCenter">#1565C0</color>
+    <color name="colorGradientEnd">#0097A7</color>
+
+    <!-- ═══════════════════════════════════════════
+         ACCENT / SECONDARY  (Vibrant Amber)
+    ════════════════════════════════════════════ -->
+    <color name="colorAccent">#FFB300</color>
+    <color name="colorAccentDark">#FF8F00</color>
+    <color name="colorAccentLight">#FFE082</color>
+
+    <!-- ═══════════════════════════════════════════
+         BACKGROUND & SURFACE
+    ════════════════════════════════════════════ -->
+    <color name="colorBackground">#F5F7FA</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorCardBg">#FFFFFF</color>
+    <color name="colorSurfaceElevated">#FAFBFD</color>
+
+    <!-- ═══════════════════════════════════════════
+         TEXT COLORS
+    ════════════════════════════════════════════ -->
+    <color name="colorTextPrimary">#1A1D26</color>
+    <color name="colorTextSecondary">#5A6070</color>
+    <color name="colorTextHint">#9CA3AF</color>
+    <color name="colorTextOnPrimary">#FFFFFF</color>
+    <color name="colorTextOnAccent">#1A1D26</color>
+
+    <!-- ═══════════════════════════════════════════
+         STATUS COLORS
+    ════════════════════════════════════════════ -->
+    <color name="colorError">#EF4444</color>
+    <color name="colorSuccess">#10B981</color>
+    <color name="colorWarning">#F59E0B</color>
+
+    <!-- ═══════════════════════════════════════════
+         REPORT TYPE COLORS
+    ════════════════════════════════════════════ -->
+    <color name="colorAccident">#EF4444</color>
+    <color name="colorPothole">#F97316</color>
+    <color name="colorConstruction">#EAB308</color>
+    <color name="colorTraffic">#3B82F6</color>
+
+    <!-- ═══════════════════════════════════════════
+         SEVERITY COLORS
+    ════════════════════════════════════════════ -->
+    <color name="colorSeverityLow">#10B981</color>
+    <color name="colorSeverityMedium">#F59E0B</color>
+    <color name="colorSeverityHigh">#EF4444</color>
+
+    <!-- ═══════════════════════════════════════════
+         DASHBOARD CARD GRADIENT COLORS
+    ════════════════════════════════════════════ -->
+    <!-- Live Map -->
+    <color name="cardColorMap">#1565C0</color>
+    <color name="cardColorMapEnd">#0D47A1</color>
+    <!-- Traffic -->
+    <color name="cardColorTraffic">#D32F2F</color>
+    <color name="cardColorTrafficEnd">#B71C1C</color>
+    <!-- Safe Routes -->
+    <color name="cardColorRoute">#00897B</color>
+    <color name="cardColorRouteEnd">#004D40</color>
+    <!-- Accident Alerts -->
+    <color name="cardColorAccident">#E65100</color>
+    <color name="cardColorAccidentEnd">#BF360C</color>
+    <!-- Pothole Detection -->
+    <color name="cardColorPothole">#EF6C00</color>
+    <color name="cardColorPotholeEnd">#E65100</color>
+    <!-- Construction -->
+    <color name="cardColorConstruction">#F9A825</color>
+    <color name="cardColorConstructionEnd">#F57F17</color>
+    <!-- Directions -->
+    <color name="cardColorDirections">#6A1B9A</color>
+    <color name="cardColorDirectionsEnd">#4A148C</color>
+
+    <!-- ═══════════════════════════════════════════
+         BOTTOM NAVIGATION
+    ════════════════════════════════════════════ -->
+    <color name="colorBottomNavBg">#FFFFFF</color>
+    <color name="colorBottomNavActive">#1565C0</color>
+    <color name="colorBottomNavInactive">#9CA3AF</color>
+
+    <!-- ═══════════════════════════════════════════
+         UTILITY
+    ════════════════════════════════════════════ -->
+    <color name="colorDivider">#E5E7EB</color>
+    <color name="colorRipple">#1565C0</color>
+    <color name="colorOverlay">#80000000</color>
+    <color name="colorGlassOverlay">#33FFFFFF</color>
+    <color name="colorShadow">#1A000000</color>
+
+    <!-- Keep for compat -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>
