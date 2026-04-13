@@ -1,13 +1,12 @@
 package com.example.saferoutegis.activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -18,25 +17,31 @@ import com.example.saferoutegis.R;
 import com.example.saferoutegis.adapters.AlertsAdapter;
 import com.example.saferoutegis.database.DatabaseHelper;
 import com.example.saferoutegis.models.Report;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Alerts screen – shows all road hazard reports in a filterable RecyclerView.
  *
- * Filter chips: All | Accidents | Potholes | Construction | Traffic
+ * Filter tabs: All | Accidents | Potholes | Construction | Traffic
  * Tapping an item opens the map centred on that report.
  */
 public class AlertsActivity extends AppCompatActivity {
 
     public static final String EXTRA_FILTER_TYPE = "filterType";
 
-    private RecyclerView  recyclerView;
-    private AlertsAdapter adapter;
-    private LinearLayout  layoutEmpty;
-    private ChipGroup     chipGroup;
+    private RecyclerView   recyclerView;
+    private AlertsAdapter  adapter;
+    private LinearLayout   layoutEmpty;
+
+    private final int[] TAB_IDS = {
+            R.id.tabAll,
+            R.id.tabAccidents,
+            R.id.tabPotholes,
+            R.id.tabConstruction,
+            R.id.tabTraffic
+    };
 
     private DatabaseHelper db;
 
@@ -47,7 +52,6 @@ public class AlertsActivity extends AppCompatActivity {
 
         db = DatabaseHelper.getInstance(this);
 
-        // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbarAlerts);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -57,66 +61,84 @@ public class AlertsActivity extends AppCompatActivity {
 
         bindViews();
         setupRecyclerView();
+        setupFilterTabs();
         loadReports();
 
-        // Apply pre-filter from intent (e.g. opened from Dashboard card)
+        // Apply pre-filter from intent (e.g. opened from a Dashboard card)
         String preFilter = getIntent().getStringExtra(EXTRA_FILTER_TYPE);
-        if (preFilter != null) applyFilterChip(preFilter);
+        if (preFilter != null) applyFilterTab(preFilter);
     }
+
+    // ── Bind views ────────────────────────────────────────────────────────────
 
     private void bindViews() {
         recyclerView = findViewById(R.id.recyclerAlerts);
         layoutEmpty  = findViewById(R.id.layoutAlertsEmpty);
-        chipGroup    = findViewById(R.id.chipGroupFilter);
+    }
 
-        // Force chip colors programmatically as safety measure
-        int[][] states = new int[][]{
-                new int[]{android.R.attr.state_checked},
-                new int[]{}
-        };
+    // ── Filter tabs ───────────────────────────────────────────────────────────
 
-        // Text Color CSL
-        int[] textColors = new int[]{
-                0xFFFFFFFF,  // White when checked
-                0xDDFFFFFF   // Semi-white when unchecked
-        };
-        android.content.res.ColorStateList chipTextCSL =
-                new android.content.res.ColorStateList(states, textColors);
+    private void setupFilterTabs() {
+        for (int id : TAB_IDS) {
+            TextView tab = findViewById(id);
+            if (tab == null) continue;
+            tab.setOnClickListener(v -> {
+                selectTab((TextView) v);
+                String tag = (String) v.getTag();
+                adapter.filterByType(tag);
+                updateEmptyState();
+            });
+        }
+        // "All" is selected by default
+        TextView defaultTab = findViewById(R.id.tabAll);
+        if (defaultTab != null) selectTab(defaultTab);
+    }
 
-        // Background Color CSL
-        int[] bgColors = new int[]{
-                0xFF1976D2,  // Primary Blue when checked
-                0x33FFFFFF   // 20% White when unchecked
-        };
-        android.content.res.ColorStateList chipBgCSL =
-                new android.content.res.ColorStateList(states, bgColors);
+    private void selectTab(TextView chosen) {
+        for (int id : TAB_IDS) {
+            TextView tab = findViewById(id);
+            if (tab == null) continue;
 
-        for (int i = 0; i < chipGroup.getChildCount(); i++) {
-            if (chipGroup.getChildAt(i) instanceof Chip) {
-                Chip chip = (Chip) chipGroup.getChildAt(i);
-                chip.setTextColor(chipTextCSL);
-                chip.setChipBackgroundColor(chipBgCSL);
-                // Also set stroke for unselected state
-                chip.setChipStrokeColor(android.content.res.ColorStateList.valueOf(0x55FFFFFF));
-                chip.setChipStrokeWidth(1f);
+            if (tab == chosen) {
+                // Selected: solid white pill, primary-blue text, bold
+                tab.setBackgroundResource(R.drawable.bg_tab_selected);
+                tab.setTextColor(0xFF1565C0);
+                tab.setTypeface(null, Typeface.BOLD);
+            } else {
+                // Unselected: transparent pill with white border, dim white text
+                tab.setBackgroundResource(R.drawable.bg_tab_unselected);
+                tab.setTextColor(0xCCFFFFFF);
+                tab.setTypeface(null, Typeface.NORMAL);
             }
         }
     }
+
+    /**
+     * Programmatically select the tab that matches the given report type and filter the list.
+     */
+    private void applyFilterTab(String type) {
+        int tabId = R.id.tabAll;
+        switch (type) {
+            case Report.TYPE_ACCIDENT:     tabId = R.id.tabAccidents;    break;
+            case Report.TYPE_POTHOLE:      tabId = R.id.tabPotholes;     break;
+            case Report.TYPE_CONSTRUCTION: tabId = R.id.tabConstruction; break;
+            case Report.TYPE_TRAFFIC:      tabId = R.id.tabTraffic;      break;
+        }
+        TextView tab = findViewById(tabId);
+        if (tab != null) {
+            selectTab(tab);
+            adapter.filterByType(type);
+            updateEmptyState();
+        }
+    }
+
+    // ── RecyclerView ──────────────────────────────────────────────────────────
 
     private void setupRecyclerView() {
         adapter = new AlertsAdapter(this, new ArrayList<>());
         adapter.setOnItemClickListener(this::openOnMap);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-
-        // Filter chip listener
-        chipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (checkedIds.isEmpty()) return;
-            Chip chip = findViewById(checkedIds.get(0));
-            String tag = chip != null ? (String) chip.getTag() : null;
-            adapter.filterByType(tag);
-            updateEmptyState();
-        });
     }
 
     private void loadReports() {
@@ -130,30 +152,13 @@ public class AlertsActivity extends AppCompatActivity {
     }
 
     private void updateEmptyState() {
-        if (layoutEmpty != null) {
-            layoutEmpty.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-        }
-        recyclerView.setVisibility(adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
+        boolean empty = adapter.getItemCount() == 0;
+        if (layoutEmpty != null) layoutEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
+        recyclerView.setVisibility(empty ? View.GONE : View.VISIBLE);
     }
 
-    /**
-     * Select the chip matching a given type and scroll to it.
-     */
-    private void applyFilterChip(String type) {
-        int chipId = -1;
-        switch (type) {
-            case Report.TYPE_ACCIDENT:     chipId = R.id.chipAccidents;     break;
-            case Report.TYPE_POTHOLE:      chipId = R.id.chipPotholes;      break;
-            case Report.TYPE_CONSTRUCTION: chipId = R.id.chipConstruction;  break;
-            case Report.TYPE_TRAFFIC:      chipId = R.id.chipTraffic;       break;
-        }
-        if (chipId != -1) {
-            Chip chip = findViewById(chipId);
-            if (chip != null) chip.setChecked(true);
-        }
-    }
+    // ── Map navigation ────────────────────────────────────────────────────────
 
-    /** Open MapActivity and pass the report's coordinates so it can be highlighted. */
     private void openOnMap(Report report) {
         Toast.makeText(this,
                 "Location: " + String.format("%.5f, %.5f",
@@ -162,6 +167,8 @@ public class AlertsActivity extends AppCompatActivity {
         startActivity(new Intent(this, MapActivity.class));
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
+
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     @Override
     protected void onResume() {

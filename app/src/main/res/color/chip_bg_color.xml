@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="#55FFFFFF" android:state_checked="true" />
-    <item android:color="#22FFFFFF" />
+    <!-- Solid primary blue when selected -->
+    <item android:state_checked="true" android:color="#1565C0" />
+    <!-- Solid white when unselected — visible against the tinted section bg -->
+    <item android:color="#FFFFFF" />
 </selector>

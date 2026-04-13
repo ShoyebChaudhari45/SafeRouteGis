@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Active: rich primary blue — bold and clear -->
+    <!-- Match fill color when selected -->
     <item android:state_checked="true" android:color="#1565C0" />
-    <!-- Inactive: dark slate — clearly readable on any light background -->
-    <item android:color="#455A64" />
+    <!-- Soft blue-grey border when unselected -->
+    <item android:color="#B3C5E8" />
 </selector>

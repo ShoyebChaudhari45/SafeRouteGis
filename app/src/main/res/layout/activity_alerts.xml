@@ -6,119 +6,183 @@
     android:layout_height="match_parent"
     android:background="@color/colorBackground">
 
+    <!-- ══════════════════════════════════════
+         APP BAR  — single gradient block
+    ══════════════════════════════════════════ -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp">
+        android:background="@android:color/transparent"
+        app:elevation="8dp">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarAlerts"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@drawable/bg_gradient_primary"
-            app:titleTextColor="@color/colorTextOnPrimary"
-            app:navigationIconTint="#FFFFFF" />
-
-        <!-- Filter chips -->
-        <HorizontalScrollView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:scrollbars="none"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:orientation="vertical"
+            android:background="@drawable/bg_gradient_primary">
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupFilter"
-                android:layout_width="wrap_content"
+            <!-- Toolbar -->
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbarAlerts"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:titleTextColor="@color/colorTextOnPrimary"
+                app:navigationIconTint="#FFFFFF" />
+
+            <!-- Subtitle row -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:singleSelection="true"
-                app:selectionRequired="true"
-                app:chipSpacingHorizontal="8dp">
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="14dp">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipAll"
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_nav_alerts"
+                    app:tint="#BBFFFFFF"
+                    android:contentDescription="Alerts" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Real-time road safety reports"
+                    android:textColor="#BBFFFFFF"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif"
+                    android:layout_marginStart="8dp" />
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="All"
-                    android:tag="ALL"
-                    android:checked="true"
-                    android:textSize="13sp"
-                    android:textColor="#FFFFFF"
-                    app:chipCornerRadius="20dp"
-                    app:chipStrokeWidth="1dp"
-                    app:chipStrokeColor="#55FFFFFF"
-                    app:chipMinHeight="36dp" />
+                    android:text="● LIVE"
+                    android:textColor="#FFEB3B"
+                    android:textSize="11sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.05" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipAccidents"
+            </LinearLayout>
+
+            <!-- ── Custom tab filter strip ── -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:paddingBottom="18dp">
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Accidents"
-                    android:tag="ACCIDENT"
-                    android:textSize="13sp"
-                    android:textColor="#FFFFFF"
-                    app:chipCornerRadius="20dp"
-                    app:chipStrokeWidth="1dp"
-                    app:chipStrokeColor="#55FFFFFF"
-                    app:chipMinHeight="36dp" />
+                    android:orientation="horizontal">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipPotholes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Potholes"
-                    android:tag="POTHOLE"
-                    android:textSize="13sp"
-                    android:textColor="#FFFFFF"
-                    app:chipCornerRadius="20dp"
-                    app:chipStrokeWidth="1dp"
-                    app:chipStrokeColor="#55FFFFFF"
-                    app:chipMinHeight="36dp" />
+                    <TextView
+                        android:id="@+id/tabAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:tag="ALL"
+                        android:text="All"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:background="@drawable/bg_tab_selected"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipConstruction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Construction"
-                    android:tag="CONSTRUCTION"
-                    android:textSize="13sp"
-                    android:textColor="#FFFFFF"
-                    app:chipCornerRadius="20dp"
-                    app:chipStrokeWidth="1dp"
-                    app:chipStrokeColor="#55FFFFFF"
-                    app:chipMinHeight="36dp" />
+                    <TextView
+                        android:id="@+id/tabAccidents"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                                 android:tag="ACCIDENT"
+                        android:text="Accidents"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textColor="#CCFFFFFF"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:background="@drawable/bg_tab_unselected"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipTraffic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Traffic"
-                    android:tag="TRAFFIC"
-                    android:textSize="13sp"
-                    android:textColor="#FFFFFF"
-                    app:chipCornerRadius="20dp"
-                    app:chipStrokeWidth="1dp"
-                    app:chipStrokeColor="#55FFFFFF"
-                    app:chipMinHeight="36dp" />
+                    <TextView
+                        android:id="@+id/tabPotholes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:tag="POTHOLE"
+                        android:text="Potholes"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textColor="#CCFFFFFF"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:background="@drawable/bg_tab_unselected"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true" />
 
-            </com.google.android.material.chip.ChipGroup>
-        </HorizontalScrollView>
+                    <TextView
+                        android:id="@+id/tabConstruction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:tag="CONSTRUCTION"
+                        android:text="Construction"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textColor="#CCFFFFFF"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:background="@drawable/bg_tab_unselected"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true" />
 
+                    <TextView
+                        android:id="@+id/tabTraffic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:tag="TRAFFIC"
+                        android:text="Traffic"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textColor="#CCFFFFFF"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:background="@drawable/bg_tab_unselected"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+        </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- RecyclerView -->
+    <!-- ══════════════════════════════════════
+         RECYCLER VIEW
+    ══════════════════════════════════════════ -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerAlerts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="6dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="24dp"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <!-- Empty state -->
+    <!-- ══════════════════════════════════════
+         EMPTY STATE
+    ══════════════════════════════════════════ -->
     <LinearLayout
         android:id="@+id/layoutAlertsEmpty"
         android:layout_width="wrap_content"
@@ -127,33 +191,51 @@
         android:orientation="vertical"
         android:gravity="center"
         android:visibility="gone"
+        android:paddingStart="40dp"
+        android:paddingEnd="40dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🛡️"
-            android:textSize="48sp"
-            android:layout_marginBottom="12dp" />
+        <FrameLayout
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginBottom="24dp">
+
+            <View
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@drawable/bg_icon_circle"
+                android:alpha="0.08" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="🛡️"
+                android:textSize="40sp" />
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/tvAlertsEmpty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/no_alerts"
-            android:textColor="@color/colorTextSecondary"
-            android:textSize="16sp"
-            android:fontFamily="sans-serif"
-            android:gravity="center" />
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:layout_marginBottom="8dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="All roads look safe right now!"
+            android:text="All roads look safe right now.\nNo incidents reported in your area."
             android:textColor="@color/colorTextHint"
             android:textSize="13sp"
             android:fontFamily="sans-serif"
-            android:layout_marginTop="4dp" />
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.4" />
 
     </LinearLayout>
 

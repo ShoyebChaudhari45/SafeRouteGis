@@ -759,23 +759,32 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <!-- ═══════════ Bottom Nav top divider ═══════════ -->
+    <View
+        android:id="@+id/bottomNavDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E7FF"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavDashboard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <!-- ═══════════ Bottom Navigation Bar ═══════════ -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavDashboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="56dp"
-        android:background="#FFFFFF"
-        android:paddingBottom="4dp"
+        android:minHeight="64dp"
+        android:background="#F8FAFF"
+        android:paddingTop="4dp"
+        android:paddingBottom="6dp"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
         app:labelVisibilityMode="labeled"
-        app:itemIconSize="24dp"
-        app:itemTextAppearanceActive="@style/TextAppearance.SafeRoute.BottomNav.Active"
-        app:itemTextAppearanceInactive="@style/TextAppearance.SafeRoute.BottomNav.Inactive"
-        app:itemActiveIndicatorStyle="@null"
-        app:elevation="8dp"
+        app:itemIconSize="26dp"
+        app:itemActiveIndicatorStyle="@style/Widget.SafeRoute.BottomNav.ActiveIndicator"
+        app:elevation="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
